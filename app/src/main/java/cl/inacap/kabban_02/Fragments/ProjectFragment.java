@@ -7,20 +7,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
-import com.google.firebase.auth.FirebaseAuth;
 
 import cl.inacap.kabban_02.R;
-import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ProfileFragment extends Fragment {
+public class ProjectFragment extends Fragment {
 
-    private TextView profile_name;
-    private CircleImageView profile_user_image;
-
-    public ProfileFragment() {
+    public ProjectFragment() {
         // Required empty public constructor
     }
 
@@ -28,17 +20,7 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
-        buildProfile(view);
-        return view;
-    }
-
-    public void buildProfile(View view){
-        profile_name = (TextView)view.findViewById(R.id.profile_name);
-        profile_user_image = (CircleImageView)view.findViewById(R.id.profile_user_image);
-
-        profile_name.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
-        Glide.with(this).load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl()).into(profile_user_image);
+        return inflater.inflate(R.layout.fragment_project, container, false);
     }
 
     /**

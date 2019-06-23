@@ -4,8 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view"
     >
-
     <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/iprofile"
+            android:title="Perfil"/>
         <item
             android:id="@+id/nav_project"
             android:icon="@drawable/iproject"

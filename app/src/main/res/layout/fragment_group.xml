@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragments.NewsFragment"
+    tools:context=".Fragments.GroupFragment"
     android:background="@color/browser_actions_bg_grey">
 
     <ScrollView
@@ -20,7 +20,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/black"
-                android:text="Noticias"/>
+                android:text="Grupos"/>
 
         </LinearLayout>
 

@@ -1,7 +1,9 @@
 package cl.inacap.kabban_02;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,13 +22,22 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import org.w3c.dom.Text;
 
+import cl.inacap.kabban_02.Fragments.ChatFragment;
+import cl.inacap.kabban_02.Fragments.GroupFragment;
+import cl.inacap.kabban_02.Fragments.NewsFragment;
+import cl.inacap.kabban_02.Fragments.ProfileFragment;
+import cl.inacap.kabban_02.Fragments.ProjectFragment;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        ProfileFragment.OnFragmentInteractionListener,
+        ProjectFragment.OnFragmentInteractionListener,
+        GroupFragment.OnFragmentInteractionListener,
+        NewsFragment.OnFragmentInteractionListener,
+        ChatFragment.OnFragmentInteractionListener{
 
     private static final int SIGN_IN_REQUEST_CODE = 1;
-    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,18 +45,9 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         try {
             verifySession();
-            toolbar = (Toolbar) findViewById(R.id.toolbar);
-            showToolbar("Perfil",false);
-
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            drawer.addDrawerListener(toggle);
-            toggle.syncState();
 
             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             navigationView.setNavigationItemSelectedListener(this);
-
         }catch(Exception e){
             Toast.makeText(getApplicationContext(),"Error: "+e.getMessage(),Toast.LENGTH_LONG).show();
         }
@@ -57,9 +59,16 @@ public class MainActivity extends AppCompatActivity
      * @param upButton (boolean) Especifica si el toolbar tendrá o no UpButton (retroceso jerárquico)
      */
     public void showToolbar(String title, boolean upButton){
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(upButton);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
     }
 
     /**
@@ -91,28 +100,7 @@ public class MainActivity extends AppCompatActivity
                             .getDisplayName(),
                     Toast.LENGTH_LONG)
                     .show();
-            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-            navigationView.setNavigationItemSelectedListener(this);
-
-            View nav_header = navigationView.getHeaderView(0);
-            TextView displayname = nav_header.findViewById(R.id.displayname);
-            ImageView userimage = nav_header.findViewById(R.id.userimage);
-
-            displayname.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
-            Glide.with(nav_header.getContext()).load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl()).into(userimage);
-
-            TextView profile_name = (TextView)findViewById(R.id.profile_name);
-            CircleImageView profile_user_image = (CircleImageView)findViewById(R.id.profile_user_image);
-
-            profile_name.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
-            Glide.with(this).load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl()).into(profile_user_image);
-
-            userimage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startActivity(new Intent(view.getContext(),MainActivity.class));
-                }
-            });
+            loadComplements();
             return true;
         }
     }
@@ -134,28 +122,7 @@ public class MainActivity extends AppCompatActivity
                         Toast.LENGTH_LONG)
                         .show();
                 try {
-                    NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-                    navigationView.setNavigationItemSelectedListener(this);
-
-                    View nav_header = navigationView.getHeaderView(0);
-                    TextView displayname = nav_header.findViewById(R.id.displayname);
-                    ImageView userimage = nav_header.findViewById(R.id.userimage);
-
-                    displayname.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
-                    Glide.with(nav_header.getContext()).load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl()).into(userimage);
-
-                    TextView profile_name = (TextView)findViewById(R.id.profile_name);
-                    CircleImageView profile_user_image = (CircleImageView)findViewById(R.id.profile_user_image);
-
-                    profile_name.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
-                    Glide.with(this).load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl()).into(profile_user_image);
-
-                    userimage.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            startActivity(new Intent(view.getContext(),MainActivity.class));
-                        }
-                    });
+                    loadComplements();
                 }catch(Exception e){
                     Toast.makeText(getApplicationContext(),"Error de carga de complementos: "+e.getMessage(),Toast.LENGTH_LONG).show();
                 }
@@ -190,21 +157,58 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        String title = "";
+        Fragment fragment = null;
 
-        if(id == R.id.nav_project){
-
+        if(id == R.id.nav_profile){
+            fragment = new ProfileFragment();
+            showToolbar("Perfil",false);
+        }else if(id == R.id.nav_project){
+            fragment = new ProjectFragment();
+            showToolbar("Proyectos",false);
         }else if(id == R.id.nav_groups){
-
+            fragment = new GroupFragment();
+            showToolbar("Grupos",false);
         }else if(id == R.id.nav_news){
-
+            fragment = new NewsFragment();
+            showToolbar("Noticias",false);
         }else if(id == R.id.nav_chat){
-
+            fragment = new ChatFragment();
+            showToolbar("Mensajes",false);
         }else if(id == R.id.nav_singout){
             closeSession();
         }
 
+        if(fragment != null){
+            getSupportFragmentManager().beginTransaction().replace(R.id.content_main,fragment).commit();
+        }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        //showToolbar(title,false);
         return true;
+    }
+
+    public void loadComplements(){
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        View nav_header = navigationView.getHeaderView(0);
+        TextView displayname = nav_header.findViewById(R.id.displayname);
+        ImageView userimage = nav_header.findViewById(R.id.userimage);
+
+        displayname.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+        Glide.with(nav_header.getContext()).load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl()).into(userimage);
+
+        Fragment fragment = new ProfileFragment();
+        getSupportFragmentManager().beginTransaction().add(R.id.content_main,fragment).commit();
+        navigationView.getMenu().getItem(0).setChecked(true);
+
+        showToolbar("Perfil",false);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
