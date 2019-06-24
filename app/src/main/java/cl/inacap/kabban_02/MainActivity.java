@@ -3,6 +3,7 @@ package cl.inacap.kabban_02;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -18,9 +19,16 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.w3c.dom.Text;
+
+import java.util.HashMap;
 
 import cl.inacap.kabban_02.Fragments.ChatFragment;
 import cl.inacap.kabban_02.Fragments.GroupFragment;
@@ -92,6 +100,15 @@ public class MainActivity extends AppCompatActivity
                             .build(),
                     SIGN_IN_REQUEST_CODE
             );
+            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("id",firebaseUser.getUid());
+            hashMap.put("username",firebaseUser.getDisplayName());
+            hashMap.put("imageURL",firebaseUser.getPhotoUrl().toString());
+
+            reference.setValue(hashMap);
             return false;
         }else{
             Toast.makeText(this,

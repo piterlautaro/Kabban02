@@ -1,6 +1,7 @@
 package cl.inacap.kabban_02.Class.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import cl.inacap.kabban_02.Class.Models.Users;
+import cl.inacap.kabban_02.MessageActivity;
 import cl.inacap.kabban_02.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -48,8 +50,22 @@ public class ChatUserAdapter extends RecyclerView.Adapter<ChatUserAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         try {
-            holder.item_user_name.setText(listUsers.get(position).getUsername());
-            Glide.with(ctx).load(listUsers.get(position).getImageURL()).into(holder.item_user_image);
+            final Users users = listUsers.get(position);
+            holder.item_user_name.setText(users.getUsername());
+            Glide.with(ctx).load(users.getImageURL()).into(holder.item_user_image);
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        Intent intent = new Intent(ctx,MessageActivity.class);
+                        intent.putExtra("userid",users.getId());
+                        ctx.startActivity(intent);
+                    }catch (Exception e){
+                        Toast.makeText(ctx,"onClick: "+e.getMessage(),Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
         }catch (Exception e){
             Toast.makeText(ctx,"onBindViewHolder: "+e.getMessage(),Toast.LENGTH_LONG).show();
         }
