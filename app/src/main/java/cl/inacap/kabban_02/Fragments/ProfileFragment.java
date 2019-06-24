@@ -1,6 +1,5 @@
 package cl.inacap.kabban_02.Fragments;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,7 +10,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
+import cl.inacap.kabban_02.Class.Models.Users;
 import cl.inacap.kabban_02.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -39,6 +41,14 @@ public class ProfileFragment extends Fragment {
 
         profile_name.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
         Glide.with(this).load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl()).into(profile_user_image);
+
+        profile_user_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid()).setValue(new Users(firebaseUser.getUid(),firebaseUser.getDisplayName(),firebaseUser.getPhotoUrl().toString()));
+            }
+        });
     }
 
     /**

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragments.subfragments.SubChatFragment"
+    tools:context=".Fragments.ChatFragments.SubChatFragment"
     android:background="@color/browser_actions_bg_grey">
 
     <!-- TODO: Update blank fragment layout -->

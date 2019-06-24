@@ -1,6 +1,5 @@
 package cl.inacap.kabban_02.Fragments;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,11 +11,12 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import cl.inacap.kabban_02.Fragments.subfragments.SubChatFragment;
-import cl.inacap.kabban_02.Fragments.subfragments.SubUsersFragment;
+import cl.inacap.kabban_02.Fragments.ChatFragments.SubChatFragment;
+import cl.inacap.kabban_02.Fragments.ChatFragments.SubUsersFragment;
 import cl.inacap.kabban_02.R;
 
 
@@ -32,18 +32,24 @@ public class ChatFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_chat, container, false);
-        tabLayout = view.findViewById(R.id.tab_chats);
-        viewPager = view.findViewById(R.id.view_pager_chat);
+        try {
+            View view = inflater.inflate(R.layout.fragment_chat, container, false);
+            tabLayout = view.findViewById(R.id.tab_chats);
+            viewPager = view.findViewById(R.id.view_pager_chat);
 
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getFragmentManager());
-        viewPagerAdapter.addFragment(new SubChatFragment(),"Mensajes");
-        viewPagerAdapter.addFragment(new SubUsersFragment(),"Usuarios");
+            ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getFragmentManager());
+            viewPagerAdapter.addFragment(new SubChatFragment(),"Chats");
+            viewPagerAdapter.addFragment(new SubUsersFragment(),"Usuarios");
 
-        viewPager.setAdapter(viewPagerAdapter);
-        tabLayout.setupWithViewPager(viewPager);
-        // Inflate the layout for this fragment
-        return view;
+            viewPager.setAdapter(viewPagerAdapter);
+            tabLayout.setupWithViewPager(viewPager);
+            // Inflate the layout for this fragment
+            return view;
+        }catch(Exception e){
+            Toast.makeText(getContext(),"onCreateView(ChatFragment): "+e.getMessage(),Toast.LENGTH_LONG).show();
+            return null;
+        }
+
     }
 
     /**
@@ -68,29 +74,55 @@ public class ChatFragment extends Fragment {
 
         public ViewPagerAdapter(FragmentManager fm) {
             super(fm);
-            this.fragments = new ArrayList<>();
-            this.titles = new ArrayList<>();
+            try {
+                this.fragments = new ArrayList<>();
+                this.titles = new ArrayList<>();
+            }catch(Exception e){
+                Toast.makeText(getContext(),"ViewPagerAdapter: "+e.getMessage(),Toast.LENGTH_LONG).show();
+            }
         }
 
         @Override
         public Fragment getItem(int i) {
-            return fragments.get(i);
+            try {
+                return fragments.get(i);
+            }catch(Exception e){
+                Toast.makeText(getContext(),"getItem: "+e.getMessage(),Toast.LENGTH_LONG).show();
+                return null;
+            }
+
         }
 
         @Override
         public int getCount() {
-            return fragments.size();
+            try {
+                return fragments.size();
+            }catch(Exception e){
+                Toast.makeText(getContext(),"getCount: "+e.getMessage(),Toast.LENGTH_LONG).show();
+                return 0;
+            }
         }
 
         public void addFragment(Fragment fragment, String title){
-            fragments.add(fragment);
-            titles.add(title);
+            try {
+                fragments.add(fragment);
+                titles.add(title);
+            }catch (Exception e){
+                Toast.makeText(getContext(),"addFragment: "+e.getMessage(),Toast.LENGTH_LONG).show();
+            }
+
         }
 
         @Nullable
         @Override
         public CharSequence getPageTitle(int position) {
-            return titles.get(position);
+            try {
+                return titles.get(position);
+            }catch (Exception e){
+                Toast.makeText(getContext(),"getPageTitle: "+e.getMessage(),Toast.LENGTH_LONG).show();
+                return null;
+            }
+
         }
     }
 }
