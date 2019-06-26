@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
@@ -18,6 +20,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+
 import cl.inacap.kabban_02.Class.Models.Users;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -27,6 +31,9 @@ public class MessageActivity extends AppCompatActivity {
     private DatabaseReference reference;
 
     private Intent intent;
+
+    ImageButton btn_enviar;
+    EditText chat_enviar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,10 +81,35 @@ public class MessageActivity extends AppCompatActivity {
                     Toast.makeText(MessageActivity.this,"onCancelled: "+databaseError.getMessage(),Toast.LENGTH_LONG).show();
                 }
             });
+
+            btn_enviar = findViewById(R.id.chat_btn_enviar);
+            chat_enviar = findViewById(R.id.chat_enviar);
+
+            btn_enviar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String msg = chat_enviar.getText().toString();
+                    if(!msg.trim().equals("")){
+                        sendMessage(fuser.getUid(),userid,msg);
+                    }else{
+                        Toast.makeText(getApplicationContext(),"Escribe un mensaje",Toast.LENGTH_SHORT).show();
+                    }
+                    chat_enviar.setText("");
+                }
+            });
         }catch (Exception e){
             Toast.makeText(MessageActivity.this,"Database(evt): "+e.getMessage(),Toast.LENGTH_LONG).show();
         }
+    }
 
+    private void sendMessage(String sender, String receiver, String message){
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("sender",sender);
+        hashMap.put("receiver",receiver);
+        hashMap.put("message",message);
+
+        databaseReference.child("Chats").push().setValue(hashMap);
     }
 }
