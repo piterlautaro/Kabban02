@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -20,8 +22,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import cl.inacap.kabban_02.Class.Adapter.MessageAdapter;
+import cl.inacap.kabban_02.Class.Models.Chat;
 import cl.inacap.kabban_02.Class.Models.Users;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -34,6 +40,11 @@ public class MessageActivity extends AppCompatActivity {
 
     ImageButton btn_enviar;
     EditText chat_enviar;
+
+    MessageAdapter messageAdapter;
+    List<Chat> chatList;
+
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +65,12 @@ public class MessageActivity extends AppCompatActivity {
             Toast.makeText(MessageActivity.this,"Chat toolbar: "+e.getMessage(),Toast.LENGTH_LONG).show();
         }
 
+        recyclerView = findViewById(R.id.rv_chat);
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+        linearLayoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
         final CircleImageView chat_user_image = findViewById(R.id.chat_profile_image);
         final TextView chat_user_name = findViewById(R.id.chat_user_name);
 
@@ -70,6 +87,8 @@ public class MessageActivity extends AppCompatActivity {
                         Users user = dataSnapshot.getValue(Users.class);
                         chat_user_name.setText(user.getUsername());
                         Glide.with(MessageActivity.this).load(user.getImageURL()).into(chat_user_image);
+
+                        readMessage(fuser.getUid(),userid,user.getImageURL());
                     }catch (Exception e){
                         Toast.makeText(MessageActivity.this,"onDataChange: "+e.getMessage(),Toast.LENGTH_LONG).show();
                     }
@@ -111,5 +130,32 @@ public class MessageActivity extends AppCompatActivity {
         hashMap.put("message",message);
 
         databaseReference.child("Chats").push().setValue(hashMap);
+    }
+
+    private void readMessage(final String myid, final String userid, final String imageurl){
+        chatList = new ArrayList<>();
+
+        reference = FirebaseDatabase.getInstance().getReference("Chats");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                chatList.clear();
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Chat chat = snapshot.getValue(Chat.class);
+                    if(chat.getReceiver().equals(myid) && chat.getSender().equals(userid) ||
+                        chat.getReceiver().equals(userid) && chat.getSender().equals(myid)){
+                        chatList.add(chat);
+                    }
+
+                    messageAdapter = new MessageAdapter(MessageActivity.this,chatList,imageurl);
+                    recyclerView.setAdapter(messageAdapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }
