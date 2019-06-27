@@ -56,6 +56,9 @@ public class SubUsersFragment extends Fragment {
 
     }
 
+    /**
+     * Se utiliza para rescatar a los usuarios de la base de datos y lugos mostrarlos en la lista de usuarios del chat
+     */
     private void readUsers() {
         try {
             final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();

@@ -121,6 +121,12 @@ public class MessageActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Enviar mensajes
+     * @param sender (String) ID del usuario emisor
+     * @param receiver (String) ID del usuario receptor
+     * @param message (String) Texto del mensaje
+     */
     private void sendMessage(String sender, String receiver, String message){
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
@@ -132,6 +138,12 @@ public class MessageActivity extends AppCompatActivity {
         databaseReference.child("Chats").push().setValue(hashMap);
     }
 
+    /**
+     * Leer los mensajes
+     * @param myid (String) ID del usuario de la sesión actual (emisor)
+     * @param userid (String) ID del usuario receptor
+     * @param imageurl (String) URL de la imagen del usuario receptor
+     */
     private void readMessage(final String myid, final String userid, final String imageurl){
         chatList = new ArrayList<>();
 

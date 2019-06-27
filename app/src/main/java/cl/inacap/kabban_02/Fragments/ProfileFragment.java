@@ -35,6 +35,10 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Construye la vista del perfil, agrupando todos los elemtos de la vista en un sólo método
+     * @param view (View) Vista que se infla (llenar de datos) del fragment en cuestión, en este caso fragment_profile. Esta acción se lleva a cabo en el método onCreateView de este fragment
+     */
     public void buildProfile(View view){
         profile_name = (TextView)view.findViewById(R.id.profile_name);
         profile_user_image = (CircleImageView)view.findViewById(R.id.profile_user_image);

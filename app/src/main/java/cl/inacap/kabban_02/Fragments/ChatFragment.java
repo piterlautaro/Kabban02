@@ -103,6 +103,11 @@ public class ChatFragment extends Fragment {
             }
         }
 
+        /**
+         * Despliega las pestañas de Chats/Usuarios en la actividad del chat
+         * @param fragment (Fragment) Contiene el fragmento de Chats o Usuarios
+         * @param title (String) Contiene el título de la pestaña (Chats o Usuarios)
+         */
         public void addFragment(Fragment fragment, String title){
             try {
                 fragments.add(fragment);

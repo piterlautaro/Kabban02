@@ -206,6 +206,9 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * Carga los complementos del DrawerNavigationView (menú lateral deslizable)
+     */
     public void loadComplements(){
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
