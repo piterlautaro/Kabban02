@@ -77,7 +77,7 @@ public class SubUsersFragment extends Fragment {
                                 userList.add(user);
                             }
                         }
-                        chatUserAdapter = new ChatUserAdapter(getContext(),userList);
+                        chatUserAdapter = new ChatUserAdapter(getContext(),userList,false);
                         recyclerView.setAdapter(chatUserAdapter);
                     }catch(Exception e){
                         Toast.makeText(getContext(),"onDataChange: "+e.getMessage(),Toast.LENGTH_LONG).show();

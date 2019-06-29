@@ -13,7 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import cl.inacap.kabban_02.Fragments.ChatFragments.SubChatFragment;
 import cl.inacap.kabban_02.Fragments.ChatFragments.SubUsersFragment;
@@ -24,6 +30,8 @@ public class ChatFragment extends Fragment {
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    DatabaseReference reference;
+    FirebaseUser fuser;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -44,6 +52,8 @@ public class ChatFragment extends Fragment {
             viewPager.setAdapter(viewPagerAdapter);
             tabLayout.setupWithViewPager(viewPager);
             // Inflate the layout for this fragment
+            fuser = FirebaseAuth.getInstance().getCurrentUser();
+            reference = FirebaseDatabase.getInstance().getReference();
             return view;
         }catch(Exception e){
             Toast.makeText(getContext(),"onCreateView(ChatFragment): "+e.getMessage(),Toast.LENGTH_LONG).show();
@@ -129,5 +139,7 @@ public class ChatFragment extends Fragment {
             }
 
         }
+
+
     }
 }

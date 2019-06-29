@@ -129,7 +129,7 @@ public class SubChatFragment extends Fragment {
                         Toast.makeText(getContext(),"Error onDataChange2: "+e.getMessage(),Toast.LENGTH_LONG).show();
                     }
 
-                    chatUserAdapter = new ChatUserAdapter(getContext(),usersList);
+                    chatUserAdapter = new ChatUserAdapter(getContext(),usersList,true);
                     recyclerView.setAdapter(chatUserAdapter);
                 }
 

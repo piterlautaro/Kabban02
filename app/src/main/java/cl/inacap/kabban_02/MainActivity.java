@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity
         ChatFragment.OnFragmentInteractionListener{
 
     private static final int SIGN_IN_REQUEST_CODE = 1;
+    DatabaseReference reference;
+    FirebaseUser fuser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,8 @@ public class MainActivity extends AppCompatActivity
 
             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             navigationView.setNavigationItemSelectedListener(this);
+            fuser = FirebaseAuth.getInstance().getCurrentUser();
+            reference = FirebaseDatabase.getInstance().getReference();
         }catch(Exception e){
             Toast.makeText(getApplicationContext(),"Error: "+e.getMessage(),Toast.LENGTH_LONG).show();
         }
@@ -107,6 +111,7 @@ public class MainActivity extends AppCompatActivity
             hashMap.put("id",firebaseUser.getUid());
             hashMap.put("username",firebaseUser.getDisplayName());
             hashMap.put("imageURL",firebaseUser.getPhotoUrl().toString());
+            hashMap.put("status","Desconectado(a)");
 
             reference.setValue(hashMap);
             return false;
@@ -230,5 +235,26 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    private void status(String status){
+        reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("status",status);
+
+        reference.updateChildren(hashMap);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        status("En línea");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        status("Desconectado(a)");
     }
 }

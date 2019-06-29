@@ -50,7 +50,16 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid()).setValue(new Users(firebaseUser.getUid(),firebaseUser.getDisplayName(),firebaseUser.getPhotoUrl().toString()));
+                FirebaseDatabase
+                        .getInstance()
+                        .getReference("Users")
+                        .child(firebaseUser
+                                .getUid())
+                        .setValue(new Users(
+                                firebaseUser.getUid(),
+                                firebaseUser.getDisplayName(),
+                                firebaseUser.getPhotoUrl().toString(),
+                                "En línea"));
             }
         });
     }

@@ -23,11 +23,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ChatUserAdapter extends RecyclerView.Adapter<ChatUserAdapter.ViewHolder>{
     private Context ctx;
     private List<Users> listUsers;
+    private boolean ischat;
 
-    public ChatUserAdapter(Context ctx, List<Users> listUsers){
+    public ChatUserAdapter(Context ctx, List<Users> listUsers, boolean ischat){
         try {
             this.listUsers = listUsers;
             this.ctx = ctx;
+            this.ischat = ischat;
         }catch (Exception e){
             Toast.makeText(ctx,"ChatUserAdapter: "+e.getMessage(),Toast.LENGTH_LONG).show();
         }
@@ -53,6 +55,19 @@ public class ChatUserAdapter extends RecyclerView.Adapter<ChatUserAdapter.ViewHo
             final Users users = listUsers.get(position);
             holder.item_user_name.setText(users.getUsername());
             Glide.with(ctx).load(users.getImageURL()).into(holder.item_user_image);
+
+            if(ischat){
+                if(users.getStatus().equals("En línea")){
+                    holder.img_on.setVisibility(View.VISIBLE);
+                    holder.img_off.setVisibility(View.GONE);
+                }else{
+                    holder.img_off.setVisibility(View.VISIBLE);
+                    holder.img_on.setVisibility(View.GONE);
+                }
+            }else{
+                holder.img_off.setVisibility(View.GONE);
+                holder.img_on.setVisibility(View.GONE);
+            }
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -81,12 +96,16 @@ public class ChatUserAdapter extends RecyclerView.Adapter<ChatUserAdapter.ViewHo
 
         public TextView item_user_name;
         public CircleImageView item_user_image;
+        private ImageView img_off;
+        private ImageView img_on;
 
         public ViewHolder(View view){
             super(view);
             try {
                 item_user_name = view.findViewById(R.id.item_user_name);
                 item_user_image = view.findViewById(R.id.item_user_image);
+                img_off = view.findViewById(R.id.img_off);
+                img_on = view.findViewById(R.id.img_on);
             }catch (Exception e){
                 Toast.makeText(ctx,"ViewHolder: "+e.getMessage(),Toast.LENGTH_LONG).show();
             }
