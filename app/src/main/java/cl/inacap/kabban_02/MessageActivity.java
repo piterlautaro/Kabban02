@@ -46,6 +46,8 @@ public class MessageActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
 
+    ValueEventListener seenListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +88,7 @@ public class MessageActivity extends AppCompatActivity {
                     try {
                         Users user = dataSnapshot.getValue(Users.class);
                         chat_user_name.setText(user.getUsername());
-                        Glide.with(MessageActivity.this).load(user.getImageURL()).into(chat_user_image);
+                        Glide.with(getApplicationContext()).load(user.getImageURL()).into(chat_user_image);
 
                         readMessage(fuser.getUid(),userid,user.getImageURL());
                     }catch (Exception e){
@@ -100,6 +102,8 @@ public class MessageActivity extends AppCompatActivity {
                     Toast.makeText(MessageActivity.this,"onCancelled: "+databaseError.getMessage(),Toast.LENGTH_LONG).show();
                 }
             });
+
+            seenMessage(userid);
 
             btn_enviar = findViewById(R.id.chat_btn_enviar);
             chat_enviar = findViewById(R.id.chat_enviar);
@@ -121,6 +125,28 @@ public class MessageActivity extends AppCompatActivity {
         }
     }
 
+    private void seenMessage(final String userid){
+        reference = FirebaseDatabase.getInstance().getReference("Chats");
+        seenListener = reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Chat chat = snapshot.getValue(Chat.class);
+                    if(chat.getReceiver().equals(fuser.getUid()) && chat.getSender().equals(userid)){
+                        HashMap<String, Object> hashMap = new HashMap<>();
+                        hashMap.put("isseen",true);
+                        snapshot.getRef().updateChildren(hashMap);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     /**
      * Enviar mensajes
      * @param sender (String) ID del usuario emisor
@@ -134,7 +160,7 @@ public class MessageActivity extends AppCompatActivity {
         hashMap.put("sender",sender);
         hashMap.put("receiver",receiver);
         hashMap.put("message",message);
-
+        hashMap.put("isseen",false);
         databaseReference.child("Chats").push().setValue(hashMap);
     }
 
@@ -188,6 +214,7 @@ public class MessageActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        reference.removeEventListener(seenListener);
         status("Desconectado(a)");
     }
 }

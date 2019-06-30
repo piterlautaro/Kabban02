@@ -27,6 +27,14 @@
             android:id="@+id/show_message"
             android:layout_alignParentRight="true"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_seen"
+            android:text="visto"
+            android:layout_below="@id/show_message"
+            android:layout_alignParentRight="true"/>
+
     </RelativeLayout>
 
 </RelativeLayout>

@@ -63,6 +63,16 @@ public class MessageAdapter  extends RecyclerView.Adapter<MessageAdapter.ViewHol
         holder.show_message.setText(chat.getMessage());
         Glide.with(ctx).load(imageURL).into(holder.chat_item_profile_image);
 
+        if(position == listChats.size()-1){
+            if(chat.isIsseen()){
+                holder.txt_seen.setText("visto");
+            }else{
+                holder.txt_seen.setText("enviado");
+            }
+        }else{
+            holder.txt_seen.setVisibility(View.GONE);
+        }
+
     }
 
     @Override
@@ -74,12 +84,14 @@ public class MessageAdapter  extends RecyclerView.Adapter<MessageAdapter.ViewHol
 
         public TextView show_message;
         public CircleImageView chat_item_profile_image;
+        public TextView txt_seen;
 
         public ViewHolder(View view){
             super(view);
             try {
                 show_message = view.findViewById(R.id.show_message);
                 chat_item_profile_image = view.findViewById(R.id.chat_item_profile_image);
+                txt_seen = view.findViewById(R.id.txt_seen);
             }catch (Exception e){
                 Toast.makeText(ctx,"ViewHolder: "+e.getMessage(),Toast.LENGTH_LONG).show();
             }
