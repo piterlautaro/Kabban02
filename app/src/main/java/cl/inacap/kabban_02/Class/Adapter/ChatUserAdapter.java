@@ -12,9 +12,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
+import cl.inacap.kabban_02.Class.Models.Chat;
 import cl.inacap.kabban_02.Class.Models.Users;
 import cl.inacap.kabban_02.MessageActivity;
 import cl.inacap.kabban_02.R;
@@ -24,6 +32,7 @@ public class ChatUserAdapter extends RecyclerView.Adapter<ChatUserAdapter.ViewHo
     private Context ctx;
     private List<Users> listUsers;
     private boolean ischat;
+    String last;
 
     public ChatUserAdapter(Context ctx, List<Users> listUsers, boolean ischat){
         try {
@@ -57,6 +66,7 @@ public class ChatUserAdapter extends RecyclerView.Adapter<ChatUserAdapter.ViewHo
             Glide.with(ctx).load(users.getImageURL()).into(holder.item_user_image);
 
             if(ischat){
+                lastMessage(users.getId(),holder.last_msg);
                 if(users.getStatus().equals("En línea")){
                     holder.img_on.setVisibility(View.VISIBLE);
                     holder.img_off.setVisibility(View.GONE);
@@ -65,6 +75,7 @@ public class ChatUserAdapter extends RecyclerView.Adapter<ChatUserAdapter.ViewHo
                     holder.img_on.setVisibility(View.GONE);
                 }
             }else{
+                holder.last_msg.setVisibility(View.GONE);
                 holder.img_off.setVisibility(View.GONE);
                 holder.img_on.setVisibility(View.GONE);
             }
@@ -98,6 +109,7 @@ public class ChatUserAdapter extends RecyclerView.Adapter<ChatUserAdapter.ViewHo
         public CircleImageView item_user_image;
         private ImageView img_off;
         private ImageView img_on;
+        private TextView last_msg;
 
         public ViewHolder(View view){
             super(view);
@@ -106,10 +118,45 @@ public class ChatUserAdapter extends RecyclerView.Adapter<ChatUserAdapter.ViewHo
                 item_user_image = view.findViewById(R.id.item_user_image);
                 img_off = view.findViewById(R.id.img_off);
                 img_on = view.findViewById(R.id.img_on);
+                last_msg = view.findViewById(R.id.last_msg);
             }catch (Exception e){
                 Toast.makeText(ctx,"ViewHolder: "+e.getMessage(),Toast.LENGTH_LONG).show();
             }
 
         }
+    }
+
+    private void lastMessage(final String userid, final TextView last_msg){
+        last = "default";
+        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Chat chat = snapshot.getValue(Chat.class);
+                    if(chat.getReceiver().equals(firebaseUser.getUid()) && chat.getSender().equals(userid) ||
+                    chat.getReceiver().equals(userid) && chat.getSender().equals(firebaseUser.getUid())){
+                        last = chat.getMessage();
+                    }
+                }
+                switch (last){
+                    case "default":
+                        last_msg.setText("Sin mensajes nuevos");
+                        break;
+                    default:
+                        last_msg.setText(last);
+                        break;
+                }
+
+                last = "default";
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }
