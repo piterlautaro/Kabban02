@@ -18,9 +18,9 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="RaisedButtonHome" parent="Theme.AppCompat.Light">
-        <item name="colorButtonNormal">@android:color/white</item>
-        <item name="colorControlHighlight">#EEEEEE</item>
-        <item name="android:textColor">@android:color/black</item>
+        <item name="colorButtonNormal">@color/accent</item>
+        <item name="colorControlHighlight">@color/accent_pressed</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="NoActionBar" parent="Theme.AppCompat.NoActionBar">
