@@ -6,6 +6,7 @@ public class Users {
     private String username;
     private String imageURL;
     private String status;
+    private String search;
 
     public Users() {
     }
@@ -15,6 +16,15 @@ public class Users {
         this.username = username;
         this.imageURL = imageURL;
         this.status = status;
+        this.search = username.toLowerCase();
+    }
+
+    public String getSearch() {
+        return search;
+    }
+
+    public void setSearch(String search) {
+        this.search = search;
     }
 
     public String getId() {

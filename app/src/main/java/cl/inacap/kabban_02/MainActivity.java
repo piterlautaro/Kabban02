@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity
             hashMap.put("username",firebaseUser.getDisplayName());
             hashMap.put("imageURL",firebaseUser.getPhotoUrl().toString());
             hashMap.put("status","Desconectado(a)");
+            hashMap.put("search",firebaseUser.getDisplayName().toLowerCase());
 
             reference.setValue(hashMap);
             return false;

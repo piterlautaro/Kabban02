@@ -46,7 +46,6 @@
         android:id="@+id/rv_chat"
         android:layout_below="@id/chat_bar_layout"
         android:layout_above="@id/relative"
-
         />
     
     <RelativeLayout
@@ -60,20 +59,19 @@
 
         <EditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="46dp"
             android:textColor="#000"
             android:background="@android:color/transparent"
             android:hint="Escribe un mensaje..."
             android:layout_toLeftOf="@id/chat_btn_enviar"
             android:layout_centerVertical="true"
             android:textColorHint="#666"
-            android:textSize="26sp"
             android:id="@+id/chat_enviar"/>
 
         <ImageButton
             android:id="@+id/chat_btn_enviar"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_alignParentRight="true"
             android:background="@drawable/ic_action_name"
             />
