@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:cardview="http://schemas.android.com/apk/res-auto"
+    android:background="#EEE"
+    android:padding="2dp">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/item_card_user_publish"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        cardview:cardBackgroundColor="@android:color/white">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/item_user_image_publish"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@mipmap/ic_launcher"/>
+
+            <TextView
+                android:id="@+id/item_user_name_publish"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="3dp"
+                android:layout_toEndOf="@id/item_user_image_publish"
+                android:layout_toRightOf="@id/item_user_image_publish"
+                android:text="Username"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/item_user_name"
+                android:paddingTop="3dp"
+                android:id="@+id/item_user_publish"
+                android:textColor="@color/primary_dark"
+                android:layout_marginLeft="10dp"
+                android:text="Some message"
+                android:layout_marginTop="20dp"
+                android:layout_toRightOf="@id/item_user_image_publish"
+                android:layout_toEndOf="@id/item_user_image_publish"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/item_publish_date"
+                android:text="01-01-1990 00:00:00"
+                android:layout_alignParentRight="true"
+                android:textColor="#666"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>

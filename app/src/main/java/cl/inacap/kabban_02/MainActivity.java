@@ -29,7 +29,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import org.w3c.dom.Text;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import cl.inacap.kabban_02.Fragments.ChatFragment;
 import cl.inacap.kabban_02.Fragments.GroupFragment;
@@ -98,24 +100,17 @@ public class MainActivity extends AppCompatActivity
      */
     public boolean verifySession(){
         if(FirebaseAuth.getInstance().getCurrentUser() == null){
+            List<AuthUI.IdpConfig> providers = Arrays.asList(
+                    new AuthUI.IdpConfig.EmailBuilder().build()
+            );
             startActivityForResult(
                     AuthUI.getInstance()
                             .createSignInIntentBuilder()
+                            .setAvailableProviders(providers)
                             .setTheme(R.style.AppTheme)
                             .build(),
                     SIGN_IN_REQUEST_CODE
             );
-            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
-
-            HashMap<String, String> hashMap = new HashMap<>();
-            hashMap.put("id",firebaseUser.getUid());
-            hashMap.put("username",firebaseUser.getDisplayName());
-            hashMap.put("imageURL",firebaseUser.getPhotoUrl().toString());
-            hashMap.put("status","Desconectado(a)");
-            hashMap.put("search",firebaseUser.getDisplayName().toLowerCase());
-
-            reference.setValue(hashMap);
             return false;
         }else{
             Toast.makeText(this,
@@ -141,6 +136,19 @@ public class MainActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == SIGN_IN_REQUEST_CODE) {
             if(resultCode == RESULT_OK) {
+
+                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+
+                HashMap<String, String> hashMap = new HashMap<>();
+                hashMap.put("id",firebaseUser.getUid());
+                hashMap.put("username",firebaseUser.getDisplayName());
+                hashMap.put("imageURL",firebaseUser.getPhotoUrl().toString());
+                hashMap.put("status","Desconectado(a)");
+                hashMap.put("search",firebaseUser.getDisplayName().toLowerCase());
+
+                reference.setValue(hashMap);
+                
                 Toast.makeText(this,
                         "Inicio de sesión exitosa ¡bienvenido!",
                         Toast.LENGTH_LONG)
@@ -249,6 +257,7 @@ public class MainActivity extends AppCompatActivity
         reference.updateChildren(hashMap);
     }
 
+    /*
     @Override
     protected void onResume() {
         super.onResume();
@@ -259,5 +268,5 @@ public class MainActivity extends AppCompatActivity
     protected void onPause() {
         super.onPause();
         status("Desconectado(a)");
-    }
+    }*/
 }
