@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -13,7 +14,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -27,6 +35,9 @@ public class AddMyGroupActivity extends AppCompatActivity {
     private Button btn_mygroup_pic;
     private String name;
     private ImageView mygroup_photo;
+
+    private Button btn_mygroup_add;
+    private Uri selectedImage;
 
 
     @Override
@@ -44,6 +55,9 @@ public class AddMyGroupActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        selectedImage = null;
+
         iniciarBotones();
     }
 
@@ -52,6 +66,7 @@ public class AddMyGroupActivity extends AppCompatActivity {
         btn_mygroup_take = findViewById(R.id.btn_mygroup_take);
         btn_mygroup_pic = findViewById(R.id.btn_mygroup_pic);
         mygroup_photo = findViewById(R.id.mygroup_photo);
+        btn_mygroup_add = findViewById(R.id.btn_mygroup_add);
 
         btn_mygroup_take.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,30 +82,63 @@ public class AddMyGroupActivity extends AppCompatActivity {
         btn_mygroup_pic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-                int code = SELECT_PICTURE;
-                startActivityForResult(intent, code);
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityForResult(intent, SELECT_PICTURE);
+            }
+        });
+
+        btn_mygroup_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    if(selectedImage != null){
+
+                        StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("uploads").child(selectedImage.getLastPathSegment());
+
+                        storageReference.putFile(selectedImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                Toast.makeText(AddMyGroupActivity.this, "Subida", Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(AddMyGroupActivity.this, "No subió: "+e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }else{
+                        Toast.makeText(AddMyGroupActivity.this, "Es nulo", Toast.LENGTH_SHORT).show();
+                    }
+                }catch (Exception e){
+                    Toast.makeText(AddMyGroupActivity.this, "Error: "+e.getMessage(), Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        if(requestCode == TAKE_PICTURE){
-            if (data.hasExtra("data")) {
-                mygroup_photo.setImageBitmap((Bitmap) data.getParcelableExtra("data"));
+        if(resultCode == RESULT_OK){
+            if(requestCode == TAKE_PICTURE){
+                if (data.hasExtra("data")) {
+                    mygroup_photo.setImageBitmap((Bitmap) data.getParcelableExtra("data"));
+                }
+            }else if(requestCode == SELECT_PICTURE){
+                selectedImage = data.getData();
+                InputStream is;
+                try {
+                    is = getContentResolver().openInputStream(selectedImage);
+                    BufferedInputStream bis = new BufferedInputStream(is);
+                    Bitmap bitmap = BitmapFactory.decodeStream(bis);
+                    mygroup_photo.setImageBitmap(bitmap);
+                } catch (FileNotFoundException e) {
+                    Toast.makeText(this, "No hay archivo: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
-        }else if(requestCode == SELECT_PICTURE){
-            Uri selectedImage = data.getData();
-            InputStream is;
-            try {
-                is = getContentResolver().openInputStream(selectedImage);
-                BufferedInputStream bis = new BufferedInputStream(is);
-                Bitmap bitmap = BitmapFactory.decodeStream(bis);
-                mygroup_photo.setImageBitmap(bitmap);
-            } catch (FileNotFoundException e) {
-                Toast.makeText(this, "No hay archivo: "+e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
+        }else{
+            Toast.makeText(this, "No ok: " + resultCode, Toast.LENGTH_SHORT).show();
         }
+
     }
 }
