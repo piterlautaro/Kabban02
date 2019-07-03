@@ -14,8 +14,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -25,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.URL;
 
 public class AddMyGroupActivity extends AppCompatActivity {
 
@@ -92,22 +96,33 @@ public class AddMyGroupActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
+                    String imageURL = "";
                     if(selectedImage != null){
 
-                        StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("uploads").child(selectedImage.getLastPathSegment());
+                        final StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("uploads").child(selectedImage.getLastPathSegment());
+                        UploadTask uploadTask = storageReference.putFile(selectedImage);
 
-                        storageReference.putFile(selectedImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                             @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                Toast.makeText(AddMyGroupActivity.this, "Subida", Toast.LENGTH_SHORT).show();
+                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                if(!task.isSuccessful()){
+                                    Toast.makeText(AddMyGroupActivity.this, "Error: "+task.getException(), Toast.LENGTH_SHORT).show();
+                                }
+                                return storageReference.getDownloadUrl();
                             }
-                        }).addOnFailureListener(new OnFailureListener() {
+                        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
                             @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(AddMyGroupActivity.this, "No subió: "+e.getMessage(), Toast.LENGTH_LONG).show();
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                if(task.isSuccessful()){
+                                    selectedImage = task.getResult();
+                                }else {
+                                    Toast.makeText(AddMyGroupActivity.this, "Algo pasó: "+task.getException(), Toast.LENGTH_SHORT).show();
+                                }
                             }
                         });
+                        imageURL = selectedImage.toString();
                     }else{
+                        imageURL = "https://images.pexels.com/photos/373912/pexels-photo-373912.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500";
                         Toast.makeText(AddMyGroupActivity.this, "Es nulo", Toast.LENGTH_SHORT).show();
                     }
                 }catch (Exception e){
