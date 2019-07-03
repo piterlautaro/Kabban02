@@ -11,6 +11,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,7 @@ public class ProfileFragment extends Fragment {
 
     private TextView profile_name;
     private CircleImageView profile_user_image;
+    private ImageView profile_cover_image;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -67,6 +69,9 @@ public class ProfileFragment extends Fragment {
     public void buildProfile(View view){
         profile_name = (TextView)view.findViewById(R.id.profile_name);
         profile_user_image = (CircleImageView)view.findViewById(R.id.profile_user_image);
+        profile_cover_image = (ImageView)view.findViewById(R.id.profile_cover_image);
+
+        Glide.with(this).load("https://images.pexels.com/photos/373912/pexels-photo-373912.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500").into(profile_cover_image);
 
         profile_name.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
         Glide.with(this).load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl()).into(profile_user_image);

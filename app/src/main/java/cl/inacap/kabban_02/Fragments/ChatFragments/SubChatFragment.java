@@ -112,6 +112,8 @@ public class SubChatFragment extends Fragment {
 
                             for(String id : list){
                                 if(user.getId().equals(id)){
+                                    usersList.add(user);
+                                    /*
                                     if(usersList.size() != 0){
                                         for(int i = 0; i<usersList.size(); i++){
                                             Users user1 = usersList.get(i);
@@ -121,7 +123,7 @@ public class SubChatFragment extends Fragment {
                                         }
                                     }else{
                                         usersList.add(user);
-                                    }
+                                    }*/
                                 }
                             }
                         }

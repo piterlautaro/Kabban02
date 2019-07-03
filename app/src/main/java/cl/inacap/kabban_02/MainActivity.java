@@ -24,6 +24,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -143,12 +144,39 @@ public class MainActivity extends AppCompatActivity
                 HashMap<String, String> hashMap = new HashMap<>();
                 hashMap.put("id",firebaseUser.getUid());
                 hashMap.put("username",firebaseUser.getDisplayName());
-                hashMap.put("imageURL",firebaseUser.getPhotoUrl().toString());
+
+                if(firebaseUser.getPhotoUrl() == null){
+                    try {
+                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                .setPhotoUri(Uri.parse("https://cooptena.fin.ec/imagenes/2019/02/AVATAR-GENERICO.jpg"))//Falta la eleccion de la foto
+                                .build();
+
+                        firebaseUser.updateProfile(profileUpdates)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                        }else{
+                                            Toast.makeText(MainActivity.this, "No foto: "+task.getException(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                    }catch (Exception e){
+                        Toast.makeText(this, "Foto: "+e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+
+                }
+                try {
+                    hashMap.put("imageURL","https://cooptena.fin.ec/imagenes/2019/02/AVATAR-GENERICO.jpg");
+                }catch (Exception e){
+                    Toast.makeText(this, "Objeto nulo: "+e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+
                 hashMap.put("status","Desconectado(a)");
                 hashMap.put("search",firebaseUser.getDisplayName().toLowerCase());
 
                 reference.setValue(hashMap);
-                
+
                 Toast.makeText(this,
                         "Inicio de sesión exitosa ¡bienvenido!",
                         Toast.LENGTH_LONG)
