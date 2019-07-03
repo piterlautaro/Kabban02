@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MessageActivity"
+    android:background="@android:color/white">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/chat_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/mygroup_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/primary"
+            android:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/MenuStyle">
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/chat_bar_layout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp"
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="294dp"
+                android:src="@drawable/defaultbanner" />
+
+            <Button
+                android:id="@+id/btn_mygroup_foto"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Subir foto"
+                android:theme="@style/RaisedButtonHome"
+                android:layout_below="@id/profile_publish"
+                android:layout_marginTop="10dp"/>
+
+            <EditText
+                android:id="@+id/mygroup_name"
+                android:layout_width="match_parent"
+                android:hint="Nombre del grupo"
+                android:layout_height="60dp"
+                android:textColor="@android:color/black"
+                android:textColorHint="#666"
+                android:layout_marginTop="10dp"/>
+
+            <Button
+                android:id="@+id/btn_mygroup_add"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Crear grupo"
+                android:theme="@style/RaisedButtonHome"
+                android:layout_below="@id/profile_publish"
+                android:layout_marginTop="10dp"/>
+
+            <Button
+                android:id="@+id/btn_mygroup_users"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Agregar usuarios"
+                android:theme="@style/RaisedButtonHome"
+                android:layout_below="@id/profile_publish"
+                android:layout_marginTop="10dp"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

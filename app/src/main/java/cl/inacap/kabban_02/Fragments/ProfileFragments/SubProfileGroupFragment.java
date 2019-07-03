@@ -1,16 +1,21 @@
 package cl.inacap.kabban_02.Fragments.ProfileFragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import cl.inacap.kabban_02.AddMyGroupActivity;
 import cl.inacap.kabban_02.R;
 
 public class SubProfileGroupFragment extends Fragment {
+
+    private FloatingActionButton fb_group;
 
     public SubProfileGroupFragment() {
         // Required empty public constructor
@@ -21,7 +26,16 @@ public class SubProfileGroupFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sub_profile_group, container, false);
+        View view = inflater.inflate(R.layout.fragment_sub_profile_group, container, false);
+        fb_group = view.findViewById(R.id.fab);
+        fb_group.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), AddMyGroupActivity.class);
+                view.getContext().startActivity(intent);
+            }
+        });
+        return view;
     }
 
     /**

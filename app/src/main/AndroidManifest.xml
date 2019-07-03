@@ -17,7 +17,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name=".MessageActivity"></activity>
+        <activity android:name=".AddMyGroupActivity"></activity>
+        <activity
+            android:name=".FloatingReferencia"
+            android:label="@string/title_activity_floating_referencia"
+            android:theme="@style/NoActionBar" />
+        <activity android:name=".MessageActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

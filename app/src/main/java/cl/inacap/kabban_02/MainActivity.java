@@ -145,31 +145,28 @@ public class MainActivity extends AppCompatActivity
                 hashMap.put("id",firebaseUser.getUid());
                 hashMap.put("username",firebaseUser.getDisplayName());
 
-                if(firebaseUser.getPhotoUrl() == null){
-                    try {
-                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                .setPhotoUri(Uri.parse("https://cooptena.fin.ec/imagenes/2019/02/AVATAR-GENERICO.jpg"))//Falta la eleccion de la foto
-                                .build();
-
-                        firebaseUser.updateProfile(profileUpdates)
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                        }else{
-                                            Toast.makeText(MainActivity.this, "No foto: "+task.getException(), Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-                    }catch (Exception e){
-                        Toast.makeText(this, "Foto: "+e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-
-                }
                 try {
-                    hashMap.put("imageURL","https://cooptena.fin.ec/imagenes/2019/02/AVATAR-GENERICO.jpg");
+                    
+                    hashMap.put("imageURL",firebaseUser.getPhotoUrl().toString());
+
                 }catch (Exception e){
-                    Toast.makeText(this, "Objeto nulo: "+e.getMessage(), Toast.LENGTH_LONG).show();
+
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setPhotoUri(Uri.parse("https://cooptena.fin.ec/imagenes/2019/02/AVATAR-GENERICO.jpg"))
+                            .build();
+
+                    firebaseUser.updateProfile(profileUpdates)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                    }else{
+                                        Toast.makeText(MainActivity.this, "No foto: "+task.getException(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+
+                    hashMap.put("imageURL","https://cooptena.fin.ec/imagenes/2019/02/AVATAR-GENERICO.jpg");
                 }
 
                 hashMap.put("status","Desconectado(a)");
