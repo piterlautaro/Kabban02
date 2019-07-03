@@ -37,18 +37,34 @@
             >
 
             <ImageView
+                android:id="@+id/mygroup_photo"
                 android:layout_width="wrap_content"
                 android:layout_height="294dp"
                 android:src="@drawable/defaultbanner" />
 
-            <Button
-                android:id="@+id/btn_mygroup_foto"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:text="Subir foto"
-                android:theme="@style/RaisedButtonHome"
-                android:layout_below="@id/profile_publish"
-                android:layout_marginTop="10dp"/>
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal">
+
+                <Button
+                    android:id="@+id/btn_mygroup_take"
+                    android:layout_width="200dp"
+                    android:layout_height="50dp"
+                    android:text="Subir foto desde la cámara"
+                    android:theme="@style/RaisedButtonHome"
+                    android:layout_marginTop="10dp"/>
+
+                <Button
+                    android:id="@+id/btn_mygroup_pic"
+                    android:layout_width="200dp"
+                    android:layout_height="50dp"
+                    android:text="Subir foto desde la galería"
+                    android:theme="@style/RaisedButtonHome"
+                    android:layout_marginTop="10dp"/>
+
+            </LinearLayout>
 
             <EditText
                 android:id="@+id/mygroup_name"
@@ -65,7 +81,6 @@
                 android:layout_height="50dp"
                 android:text="Crear grupo"
                 android:theme="@style/RaisedButtonHome"
-                android:layout_below="@id/profile_publish"
                 android:layout_marginTop="10dp"/>
 
             <Button
@@ -74,7 +89,6 @@
                 android:layout_height="50dp"
                 android:text="Agregar usuarios"
                 android:theme="@style/RaisedButtonHome"
-                android:layout_below="@id/profile_publish"
                 android:layout_marginTop="10dp"/>
 
         </LinearLayout>
